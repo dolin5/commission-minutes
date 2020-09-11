@@ -140,7 +140,7 @@ export default function Dashboard() {
       <CssBaseline />
       <AppBar
         position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}
+        className={clsx(classes.appBar, open)}
       >
         <Toolbar className={classes.toolbar}>
           <IconButton
@@ -186,7 +186,6 @@ export default function Dashboard() {
         <Divider />
         <BookTree/>
         <Divider />
-        <List>{secondaryListItems}</List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />

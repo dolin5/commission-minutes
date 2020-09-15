@@ -43,8 +43,8 @@ class BookTree extends React.Component<{}, { books: any[] }> {
     console.log(response);
     this.setState({
       books: [
-        <TreeItem nodeId="fuck" key="fuck" label="Fuck">
-          <TreeItem nodeId="shit" key="shit" label="Shit"></TreeItem>
+        <TreeItem nodeId="top" key="top" label="top">
+          <TreeItem nodeId="second" key="second" label="second"></TreeItem>
         </TreeItem>,
       ],
     });

@@ -6,7 +6,7 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.2.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
-    "@types/react": "latest",
+    "@types/react": "^16.9.49",
     "@types/react-dom": "latest",
     "@types/recharts": "^1.8.14",
     "clsx": "^1.0.4",
@@ -16,6 +16,7 @@
     "react-dom": "latest",
     "react-scripts": "latest",
     "recharts": "^1.8.5",
+    "tiff.js": "^1.0.0",
     "typescript": "latest"
   },
   "scripts": {

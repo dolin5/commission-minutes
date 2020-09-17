@@ -25,12 +25,17 @@ interface book extends content {
 
 const styles = (theme) => ({
   drawerElement: {
-    marginLeft: "20px"    
+    marginLeft: "20px",
+    bottom: 0,
   },
-  listScroll:{
-    height: "89vh",
-    overflowY: "scroll" as "scroll"
-  }
+  listScroll: {
+    position: "absolute" as "absolute",
+    bottom: 0,
+    top: "50px",
+    left: "10px",
+    right: 0,
+    overflowY: "scroll" as "scroll",
+  },
 });
 
 async function getBooks(): Promise<book[]> {
@@ -77,9 +82,9 @@ async function getBook(url): Promise<(book | content)[]> {
         }
         let label, sequenceNum;
         try {
-          if ((c.content[0] as string).match(/(?:_PG)[0-9]+/)) {
+          if ((c.content[0] as string).match(/(?:_PG)[0-9]+/i)) {
             sequenceNum = parseInt(
-              (c.content[0] as string).match(/(?<=_PG)([0-9]+)/)?.[0] as string
+              (c.content[0] as string).match(/(?<=_PG)([0-9]+)/i)?.[0] as string
             );
             label = "Pg " + sequenceNum;
           } else if ((c.content[0] as string).match(/(?:Book )[0-9]+/i)) {
@@ -88,7 +93,7 @@ async function getBook(url): Promise<(book | content)[]> {
                 /(?<=Book )([0-9]+)/i
               )?.[0] as string
             );
-            label = "Book " + sequenceNum;
+            label = titleCase(c.content[0].split(".")[0]);
           } else {
             label = c.content[0];
             sequenceNum = 99999;
@@ -114,14 +119,18 @@ function bookSort(bookA: content, bookB: content) {
   return bookA.sequenceNum - bookB.sequenceNum;
 }
 
-class BookTree extends React.Component<{ classes: any }, { books: any[] }> {
+class BookTree extends React.Component<{ classes: any, onClickCallback? }, { books: any[],selected?:content }> {
   constructor(props) {
     super(props);
     this.state = { books: [] };
     //this.classes = useStyles();
   }
-  pageClick(targetPage:content){
+
+  
+
+  pageClick(targetPage: content) {
     console.log(targetPage);
+    this.props.onClickCallback(targetPage)
   }
   async componentDidMount() {
     const response = await getBooks();
@@ -134,31 +143,35 @@ class BookTree extends React.Component<{ classes: any }, { books: any[] }> {
           label={b.label}
         >
           {b.pages.map((g, j) => {
-            return <TreeItem
-              nodeId={"Bk-" + b + "-" + i + " G-" + j}
-              key={"Bk-" + b + "-" + i + " G-" + j}
-              label={
-                g[0].sequenceNum.toString() +
-                " - " +
-                g[g.length - 1].sequenceNum
-              }
-            >
-              {(b as book).pages[j]?.map((p, k) => {
-                return (
-                  <TreeItem
-                    nodeId={
-                      "Bk-" + b + "-" + i + " G-" + j + " Pg-" + p + "-" + k
-                    }
-                    key={"Bk-" + b + "-" + i + " G-" + j + " Pg-" + p + "-" + k}
-                    label={p.label}
-                    onClick={(e)=>{
-                      e.preventDefault()
-                       this.pageClick(p)
-                    }}
-                  />
-                );
-              })}
-            </TreeItem>;
+            return (
+              <TreeItem
+                nodeId={"Bk-" + b + "-" + i + " G-" + j}
+                key={"Bk-" + b + "-" + i + " G-" + j}
+                label={
+                  g[0].sequenceNum.toString() +
+                  " - " +
+                  g[g.length - 1].sequenceNum
+                }
+              >
+                {(b as book).pages[j]?.map((p, k) => {
+                  return (
+                    <TreeItem
+                      nodeId={
+                        "Bk-" + b + "-" + i + " G-" + j + " Pg-" + p + "-" + k
+                      }
+                      key={
+                        "Bk-" + b + "-" + i + " G-" + j + " Pg-" + p + "-" + k
+                      }
+                      label={b.label + " " + p.label}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        this.pageClick(p);
+                      }}
+                    />
+                  );
+                })}
+              </TreeItem>
+            );
           })}
         </TreeItem>
       );
@@ -175,7 +188,7 @@ class BookTree extends React.Component<{ classes: any }, { books: any[] }> {
       <div className={classes.drawerElement}>
         <Title>Books</Title>
         <TreeView
-        className={classes.listScroll}
+          className={classes.listScroll}
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
         >
@@ -186,78 +199,15 @@ class BookTree extends React.Component<{ classes: any }, { books: any[] }> {
   }
 }
 
-//export default BookTree;
-
 export default withStyles(styles, { withTheme: true })(BookTree);
-// // Generate Order Data
-// function createData(
-//   id: number,
-//   date: string,
-//   name: string,
-//   shipTo: string,
-//   paymentMethod: string,
-//   amount: number,
-// ) {
-//   return { id, date, name, shipTo, paymentMethod, amount };
-// }
 
-// async function getBooks(){
-//   //const results = getJournalPagesAsJSON('http://ftp.gallatin.mt.gov/Commission%20Minutes/Commissioner%20Journals');
-//   return [];
-// }
+function capitalizeFirstLetter(string) {
+  return string[0].toUpperCase() + string.slice(1).toLowerCase();
+}
 
-// function preventDefault(event: React.MouseEvent) {
-//   event.preventDefault();
-// }
-
-// const useStyles = makeStyles((theme) => ({
-//   seeMore: {
-//     marginTop: theme.spacing(3),
-//   },
-//   root: {
-//     marginLeft:theme.spacing(2)
-//   },
-//   overFlow: {
-//     overflow:'auto'
-//   }
-
-// }));
-
-// export default  function BookTree() {
-//   const [books, setBooks] = React.useState("");
-
-//   React.useEffect(() => {
-//     const fetchBooks = async () => {
-//       const bookResponse = await getBooks();
-//         let bookComponents = bookResponse?.map((b,i)=>{
-//         return <TreeItem key={'B-'+i} nodeId={'B-'+i} label={(b as treeObject)?.content?.[0]}>
-//           {
-//             b?.subDir.map((sD,j)=>{
-//               return <TreeItem key={'B-'+i+'-P'+j} nodeId={'B-'+i+'-P'+j} label={sD.content[0]}/>
-//             })
-//           }
-//         </TreeItem>
-//       })
-//       //const { email } = await response.json();
-//       setBooks(bookComponents);
-//     };
-//     fetchBooks();
-//   }, []);
-//   const classes = useStyles();
-//   return (
-//     <div
-//     className={classes.root}>
-//       <Title>Books</Title>
-//       <TreeView className={classes.overFlow}
-//       defaultCollapseIcon={<ExpandMoreIcon />}
-//       defaultExpandIcon={<ChevronRightIcon />}
-//     >{books}
-//     </TreeView>
-//       <div className={classes.seeMore}>
-//         <Link color="primary" href="#" onClick={preventDefault}>
-//           See more orders
-//         </Link>
-//       </div>
-//     </div>
-//   );
-// }
+function titleCase(string) {
+  return string
+    .split(" ")
+    .map((x) => capitalizeFirstLetter(x))
+    .join(" ");
+}

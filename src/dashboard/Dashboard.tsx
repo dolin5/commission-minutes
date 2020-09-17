@@ -21,6 +21,7 @@ import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
 import BookTree from '../BookTree';
+import Viewer from '../Viewer';
 
 function Copyright() {
   return (
@@ -83,6 +84,9 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    height: 'calc(100% - 64px)', 
+    top: 64,
+    overflow:'hidden'
   },
   drawerPaperClose: {
     overflowX: 'hidden',
@@ -120,6 +124,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
@@ -129,9 +135,25 @@ export default function Dashboard() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  return (
+
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  //let selection = {};
+  //let viewer = <Viewer  selection={selection}/>;
+
+
+  let viewerElement = React.createRef<any>();
+
+  const updateViewer = (content=>{
+    console.log(content);
+    viewerElement.current.update(content);
+  });
+  
+  let bookTree = <BookTree onClickCallback={updateViewer}/>;
+
+  
+
+  return (    
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
@@ -174,37 +196,25 @@ export default function Dashboard() {
         }}
         open={open}
       >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <BookTree/>
+        {bookTree}
         <Divider />
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
+        <Container maxWidth="xl" className={classes.container}>
+          <Grid container spacing={1}>
             {/* Chart */}
+            <Grid item xs={12} xl={12}>
+              <Paper >
+                <Viewer ref={viewerElement}/>
+              </Paper>
+            </Grid>
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
                 <Chart />
               </Paper>
             </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
+            
           </Grid>
           <Box pt={4}>
             <Copyright />

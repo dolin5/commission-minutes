@@ -145,7 +145,6 @@ export default function Dashboard() {
   let viewerElement = React.createRef<any>();
 
   const updateViewer = (content=>{
-    console.log(content);
     viewerElement.current.update(content);
   });
   

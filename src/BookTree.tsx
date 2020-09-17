@@ -129,12 +129,10 @@ class BookTree extends React.Component<{ classes: any, onClickCallback? }, { boo
   
 
   pageClick(targetPage: content) {
-    console.log(targetPage);
-    this.props.onClickCallback(targetPage)
+    //this.props.onClickCallback(targetPage)
   }
   async componentDidMount() {
     const response = await getBooks();
-    console.log(response);
     let books = response.map((b, i) => {
       return (
         <TreeItem
@@ -165,7 +163,7 @@ class BookTree extends React.Component<{ classes: any, onClickCallback? }, { boo
                       label={b.label + " " + p.label}
                       onClick={(e) => {
                         e.preventDefault();
-                        this.pageClick(p);
+                        this.props?.onClickCallback(p);
                       }}
                     />
                   );

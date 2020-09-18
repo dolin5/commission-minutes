@@ -16,8 +16,10 @@
     "react-dom": "latest",
     "react-scripts": "latest",
     "recharts": "^1.8.5",
+    "tiff": "^4.2.0",
     "tiff.js": "^1.0.0",
-    "typescript": "latest"
+    "typescript": "latest",
+    "viewerjs": "^1.6.2"
   },
   "scripts": {
     "start": "react-scripts start --no-cache",

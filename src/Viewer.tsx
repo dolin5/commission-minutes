@@ -70,9 +70,11 @@ class Viewer extends React.Component<
   viewer:ViewerJS | undefined;
   viewerRef: React.RefObject<HTMLImageElement>;
   imageUrl:string;
+  otherImageRef: React.RefObject<HTMLImageElement>;
   constructor(props) {
     super(props);
     this.viewerRef = React.createRef();
+    this.otherImageRef = React.createRef();
     this.imageUrl = "./dog.jpg"
   }
 
@@ -80,20 +82,21 @@ class Viewer extends React.Component<
     this.setState({ loading: true });
     const href = 'http://ftp.gallatin.mt.gov'+content?.href;
     let canvas = await getTiffCanvas(href);
-    (this.refs.canvasRef as HTMLCanvasElement).width = canvas.width;
-    (this.refs.canvasRef as HTMLCanvasElement).height = canvas.height;
-    let ctx =(this.refs.canvasRef as HTMLCanvasElement).getContext('2d')
+   
+    //let ctx =(this.refs.canvasRef as HTMLCanvasElement).getContext('2d')
     //ctx?.drawImage( canvas,0,0);
     let image = await getTiffImage(href);
     if (this.viewer){
       this.viewer.destroy();
-      if (this.viewerRef.current){
-        this.viewerRef.current.src = image;
+      if (this.otherImageRef.current){
+        this.otherImageRef.current.src = image;
+        //this.viewerRef.current.hidden = true;
       }
       
       this.viewer= new ViewerJS((this.viewerRef.current as Element),{
         inline:true
       })
+      
     }
     this.setState({loading: false });
   }
@@ -113,7 +116,7 @@ class Viewer extends React.Component<
     return (
       <div>
         <div ><img ref={this.viewerRef} src={dog}></img></div>
-        <canvas ref="canvasRef"/>
+        <img ref={this.otherImageRef}></img>
       </div>
     );
   }

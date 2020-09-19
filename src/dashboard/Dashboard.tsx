@@ -207,13 +207,7 @@ export default function Dashboard() {
               <Paper >
                 <Viewer ref={viewerElement}/>
               </Paper>
-            </Grid>
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <Chart />
-              </Paper>
-            </Grid>
-            
+            </Grid>            
           </Grid>
           <Box pt={4}>
             <Copyright />

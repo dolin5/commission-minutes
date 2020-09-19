@@ -19,6 +19,7 @@
     "tiff": "^4.2.0",
     "tiff.js": "^1.0.0",
     "typescript": "latest",
+    "utif": "^3.1.0",
     "viewerjs": "^1.6.2"
   },
   "scripts": {
